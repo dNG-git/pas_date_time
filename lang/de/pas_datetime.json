@@ -1,0 +1,24 @@
+{
+ "pas_datetime_mode": 24,
+
+ "pas_datetime_connector": " um ",
+
+ "pas_datetime_longdate_1": "%d. ",
+ "pas_datetime_longdate_2": " %Y",
+ "pas_datetime_longdate_month_1": "Januar",
+ "pas_datetime_longdate_month_2": "Februar",
+ "pas_datetime_longdate_month_3": "März",
+ "pas_datetime_longdate_month_4": "April",
+ "pas_datetime_longdate_month_5": "Mai",
+ "pas_datetime_longdate_month_6": "Juni",
+ "pas_datetime_longdate_month_7": "Juli",
+ "pas_datetime_longdate_month_8": "August",
+ "pas_datetime_longdate_month_9": "September",
+ "pas_datetime_longdate_month_10": "Oktober",
+ "pas_datetime_longdate_month_11": "November",
+ "pas_datetime_longdate_month_12": "Dezember",
+
+ "pas_datetime_shortdate": "%d.%m.%y",
+
+ "pas_datetime_time": "%H:%M"
+}

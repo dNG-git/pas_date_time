@@ -88,7 +88,7 @@ Sets the LogHandler.
 				timestamp += (3600 * tz)
 			#
 
-			if (dtconnector == None): dtconnector = L10n.get("pas_datetime_connector", " - ")
+			if (dtconnector is None): dtconnector = L10n.get("pas_datetime_connector", " - ")
 			_time = gmtime(timestamp)
 
 			if (_type == DateTime.TYPE_DATE_SHORT or _type == DateTime.TYPE_DATE_TIME_SHORT): _return = strftime(L10n.get("pas_datetime_shortdate"), _time)

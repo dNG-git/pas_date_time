@@ -76,9 +76,9 @@ Sets the LogHandler.
 
 		_return = L10n.get("core_unknown")
 
-		if (type(_type) != int): _type = DateTime.get_type(_type)
+		if (type(_type) is not int): _type = DateTime.get_type_int(_type)
 
-		if (type(timestamp) == int):
+		if (type(timestamp) in ( int, float )):
 		#
 			L10n.init("pas_datetime")
 
@@ -121,7 +121,7 @@ Sets the LogHandler.
 	#
 
 	@staticmethod
-	def get_type(_type):
+	def get_type_int(_type):
 	#
 		"""
 Parses the given type parameter given as a string value.

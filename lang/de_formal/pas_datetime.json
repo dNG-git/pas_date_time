@@ -19,6 +19,7 @@
  "pas_datetime_longdate_month_12": "Dezember",
 
  "pas_datetime_shortdate": "%d.%m.%y",
+ "pas_datetime_year_and_month": "%m.%Y",
 
  "pas_datetime_time": "%H:%M"
 }

@@ -57,12 +57,20 @@ Short date and time format
 	"""
 Short date format
 	"""
+	TYPE_YEAR = 6
+	"""
+Year-only value
+	"""
+	TYPE_YEAR_AND_MONTH = 7
+	"""
+Year and month format
+	"""
 
 	@staticmethod
 	def format_l10n(_type, timestamp, tz = 0, dtconnector = None, hide_tz = False):
 	#
 		"""
-Sets the LogHandler.
+Returns the formatted date and / or time.
 
 :param _type: Defines the requested type that should be returned.
 :param timestamp: An Unix timestamp
@@ -91,14 +99,16 @@ Sets the LogHandler.
 			if (dtconnector is None): dtconnector = L10n.get("pas_datetime_connector", " - ")
 			_time = gmtime(timestamp)
 
-			if (_type == DateTime.TYPE_DATE_SHORT or _type == DateTime.TYPE_DATE_TIME_SHORT): _return = strftime(L10n.get("pas_datetime_shortdate"), _time)
-			elif (_type == DateTime.TYPE_DATE_LONG or _type == DateTime.TYPE_DATE_TIME_LONG):
+			if (_type == DateTime.TYPE_YEAR): _return = strftime("%Y", _time)
+			elif (_type == DateTime.TYPE_YEAR_AND_MONTH): _return = strftime(L10n.get("pas_datetime_year_and_month"), _time)
+			elif (_type in ( DateTime.TYPE_DATE_SHORT, DateTime.TYPE_DATE_TIME_SHORT )): _return = strftime(L10n.get("pas_datetime_shortdate"), _time)
+			elif (_type in ( DateTime.TYPE_DATE_LONG, DateTime.TYPE_DATE_TIME_LONG )):
 			#
 				month = strftime("%m", _time)
 				_return = "{0}{1}{2}".format(strftime(L10n.get("pas_datetime_longdate_1"), _time), L10n.get("pas_datetime_longdate_month_{0:d}".format(int(month))), strftime(L10n.get("pas_datetime_longdate_2"), _time))
 			#
 
-			if (_type == DateTime.TYPE_DATE_TIME_SHORT or _type == DateTime.TYPE_DATE_TIME_LONG or _type == DateTime.TYPE_TIME):
+			if (_type in ( DateTime.TYPE_DATE_TIME_SHORT, DateTime.TYPE_DATE_TIME_LONG, DateTime.TYPE_TIME )):
 			#
 				if (_return != ""): _return += dtconnector
 				_return += strftime(L10n.get("pas_datetime_time"), _time)
@@ -136,6 +146,8 @@ Parses the given type parameter given as a string value.
 		elif (_type == "date_short"): _return = DateTime.TYPE_DATE_SHORT
 		elif (_type == "date_time_long"): _return = DateTime.TYPE_DATE_TIME_LONG
 		elif (_type == "time"): _return = DateTime.TYPE_TIME
+		elif (_type == "year"): _return = DateTime.TYPE_YEAR
+		elif (_type == "year_and_month"): _return = DateTime.TYPE_YEAR_AND_MONTH
 		else: _return = DateTime.TYPE_DATE_TIME_SHORT
 
 		return _return

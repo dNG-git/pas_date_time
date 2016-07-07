@@ -28,11 +28,11 @@ class DateTime(object):
 "DateTime" provides formatting methods for text processing like localized
 output.
 
-:author:     direct Netware Group
+:author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: datetime
-:since:      v0.1.00
+:since:      v0.2.00
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
 	"""
@@ -79,7 +79,7 @@ Returns the formatted date and / or time.
 :param hide_tz: True to hide the timezone information.
 
 :return: (str) Formatted date and / or time
-:since:  v0.1.00
+:since:  v0.2.00
 		"""
 
 		_return = L10n.get("core_unknown")
@@ -139,7 +139,7 @@ Parses the given type parameter given as a string value.
 :param _type: String type
 
 :return: (int) Internal type
-:since:  v0.1.01
+:since:  v0.2.00
 		"""
 
 		if (_type == "date_long"): _return = DateTime.TYPE_DATE_LONG

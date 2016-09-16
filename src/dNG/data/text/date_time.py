@@ -284,6 +284,10 @@ Parses the given type parameter given as a string value.
 		if (_type == "date_long"): _return = DateTime.TYPE_DATE_LONG
 		elif (_type == "date_short"): _return = DateTime.TYPE_DATE_SHORT
 		elif (_type == "date_time_long"): _return = DateTime.TYPE_DATE_TIME_LONG
+		elif (_type == "fuzzy"): _return = DateTime.TYPE_FUZZY
+		elif (_type == "fuzzy_day"): _return = DateTime.TYPE_FUZZY_DAY
+		elif (_type == "fuzzy_month"): _return = DateTime.TYPE_FUZZY_MONTH
+		elif (_type == "fuzzy_year"): _return = DateTime.TYPE_FUZZY_YEAR
 		elif (_type == "time"): _return = DateTime.TYPE_TIME
 		elif (_type == "year"): _return = DateTime.TYPE_YEAR
 		elif (_type == "year_and_month"): _return = DateTime.TYPE_YEAR_AND_MONTH

@@ -18,7 +18,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-from time import gmtime, strftime
+from math import floor
+from time import gmtime, strftime, time
 
 from .l10n import L10n
 
@@ -65,6 +66,22 @@ Year-only value
 	"""
 Year and month format
 	"""
+	TYPE_FUZZY = 8
+	"""
+Fuzzy timestamps
+	"""
+	TYPE_FUZZY_DAY = 9
+	"""
+Fuzzy timestamps up to one day, short date and time format afterwards
+	"""
+	TYPE_FUZZY_MONTH = 10
+	"""
+Fuzzy timestamps up to one month, short date and time format afterwards
+	"""
+	TYPE_FUZZY_YEAR = 11
+	"""
+Fuzzy timestamps up to one year, short date and time format afterwards
+	"""
 
 	@staticmethod
 	def format_l10n(_type, timestamp, tz = 0, dtconnector = None, hide_tz = False):
@@ -99,13 +116,37 @@ Returns the formatted date and / or time.
 			if (dtconnector is None): dtconnector = L10n.get("pas_datetime_connector", " - ")
 			_time = gmtime(timestamp)
 
+			if (_type in ( DateTime.TYPE_FUZZY,
+			               DateTime.TYPE_FUZZY_DAY,
+			               DateTime.TYPE_FUZZY_MONTH,
+			               DateTime.TYPE_FUZZY_YEAR
+			             )
+			   ):
+			#
+				time_difference = time() - timestamp
+
+				if (time_difference < 0
+				    or (_type == DateTime.TYPE_FUZZY_DAY and time_difference > 86399)
+				    or (_type == DateTime.TYPE_FUZZY_MONTH and time_difference > 2591999)
+				    or (_type == DateTime.TYPE_FUZZY_YEAR and time_difference > 31535999)
+				   ): _type = DateTime.TYPE_DATE_TIME_SHORT
+				else: _return = DateTime.format_fuzzy_l10n(timestamp, _type, tz)
+			#
+
 			if (_type == DateTime.TYPE_YEAR): _return = strftime("%Y", _time)
 			elif (_type == DateTime.TYPE_YEAR_AND_MONTH): _return = strftime(L10n.get("pas_datetime_year_and_month"), _time)
-			elif (_type in ( DateTime.TYPE_DATE_SHORT, DateTime.TYPE_DATE_TIME_SHORT )): _return = strftime(L10n.get("pas_datetime_shortdate"), _time)
+			elif (_type in ( DateTime.TYPE_DATE_SHORT,
+			                 DateTime.TYPE_DATE_TIME_SHORT
+			               )
+			     ): _return = strftime(L10n.get("pas_datetime_shortdate"), _time)
 			elif (_type in ( DateTime.TYPE_DATE_LONG, DateTime.TYPE_DATE_TIME_LONG )):
 			#
 				month = strftime("%m", _time)
-				_return = "{0}{1}{2}".format(strftime(L10n.get("pas_datetime_longdate_1"), _time), L10n.get("pas_datetime_longdate_month_{0:d}".format(int(month))), strftime(L10n.get("pas_datetime_longdate_2"), _time))
+
+				_return = "{0}{1}{2}".format(strftime(L10n.get("pas_datetime_longdate_1"), _time),
+				                             L10n.get("pas_datetime_longdate_month_{0:d}".format(int(month))),
+				                             strftime(L10n.get("pas_datetime_longdate_2"), _time)
+				                            )
 			#
 
 			if (_type in ( DateTime.TYPE_DATE_TIME_SHORT, DateTime.TYPE_DATE_TIME_LONG, DateTime.TYPE_TIME )):
@@ -123,6 +164,104 @@ Returns the formatted date and / or time.
 
 					if (tz < 0): _return += "{0:d}{1}".format(tz_hours, tz_minutes_str)
 					if (tz > 0): _return += "+{0:d}{1}".format(tz_hours, tz_minutes_str)
+				#
+			#
+		#
+
+		return _return
+	#
+
+	@staticmethod
+	def format_fuzzy_l10n(timestamp, _type = None, tz = 0):
+	#
+		"""
+Returns a descriptive, formatted date and time like "just now" or "7 minutes
+ago".
+
+:param timestamp: An Unix timestamp
+:param _type: Defines the requested type that should be returned.
+:param tz: The difference in hours west of UTC
+
+:return: (str) Descriptive, formatted date and time
+:since:  v0.2.00
+		"""
+
+		_return = L10n.get("core_unknown")
+
+		if (_type is None): _type = DateTime.TYPE_FUZZY
+		elif (type(_type) is not int): _type = DateTime.get_type_int(_type)
+
+		if (_type in ( DateTime.TYPE_FUZZY,
+		               DateTime.TYPE_FUZZY_DAY,
+		               DateTime.TYPE_FUZZY_MONTH,
+		               DateTime.TYPE_FUZZY_YEAR
+		             )
+		    and type(timestamp) in ( int, float )
+		   ):
+		#
+			L10n.init("pas_datetime")
+
+			if (tz != 0):
+			#
+				tz *= -1
+				timestamp += (3600 * tz)
+			#
+
+			time_difference = time() - timestamp
+
+			if (time_difference < 0
+			    or (_type == DateTime.TYPE_FUZZY_DAY and time_difference > 86399)
+			    or (_type == DateTime.TYPE_FUZZY_MONTH and time_difference > 2591999)
+			    or (_type == DateTime.TYPE_FUZZY_YEAR and time_difference > 31535999)
+			   ): _return = DateTime.format_l10n(DateTime.TYPE_DATE_TIME_SHORT, timestamp, tz)
+			elif (time_difference < 60): _return = L10n.get("pas_datetime_fuzzy_just_now")
+			elif (time_difference < 300): _return = L10n.get("pas_datetime_fuzzy_last_five_minutes")
+			elif (time_difference < 7200):
+			#
+				_return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_minutes_ago_1"),
+				                               floor(time_difference / 60),
+				                               L10n.get("pas_datetime_fuzzy_minutes_ago_2")
+				                              )
+			#
+			elif (time_difference < 172800):
+			#
+				_return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_hours_ago_1"),
+				                               floor(time_difference / 3600),
+				                               L10n.get("pas_datetime_fuzzy_hours_ago_2")
+				                              )
+			#
+			elif (time_difference < 5184000):
+			#
+				_return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_days_ago_1"),
+				                               floor(time_difference / 86400),
+				                               L10n.get("pas_datetime_fuzzy_days_ago_2")
+				                              )
+			#
+			else:
+			#
+				time_current = gmtime()
+				time_given = gmtime(timestamp)
+
+				if (time_difference < 63072000):
+				#
+					_return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_months_ago_1"),
+					                               (((time_current.tm_year - time_given.tm_year) * 12)
+					                                + (time_current.tm_mon - time_given.tm_mon)
+					                                + (1 if ((time_current.tm_mday - time_given.tm_mday) > 15) else 0)
+					                                + (-1 if ((time_current.tm_mday - time_given.tm_mday) < -15) else 0)
+					                               ),
+					                               L10n.get("pas_datetime_fuzzy_months_ago_2")
+					                              )
+				#
+				else:
+				#
+					_return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_years_ago_1"),
+					                               ((time_current.tm_year - time_given.tm_year)
+					                                + (1 if ((time_current.tm_mon - time_given.tm_mon) > 6) else 0)
+					                                + (-1 if ((time_current.tm_mon - time_given.tm_mon) < -6) else 0)
+					                               ),
+					                               L10n.get("pas_datetime_fuzzy_years_ago_2")
+					                              )
 				#
 			#
 		#

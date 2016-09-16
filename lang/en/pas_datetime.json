@@ -3,6 +3,19 @@
 
  "pas_datetime_connector": " at ",
 
+ "pas_datetime_fuzzy_just_now": "just now",
+ "pas_datetime_fuzzy_last_five_minutes": "some minutes ago",
+ "pas_datetime_fuzzy_days_ago_1": "",
+ "pas_datetime_fuzzy_days_ago_2": " days ago",
+ "pas_datetime_fuzzy_hours_ago_1": "",
+ "pas_datetime_fuzzy_hours_ago_2": " hours ago",
+ "pas_datetime_fuzzy_minutes_ago_1": "",
+ "pas_datetime_fuzzy_minutes_ago_2": " minutes ago",
+ "pas_datetime_fuzzy_months_ago_1": "",
+ "pas_datetime_fuzzy_months_ago_2": " months ago",
+ "pas_datetime_fuzzy_years_ago_1": "",
+ "pas_datetime_fuzzy_years_ago_2": " years ago",
+
  "pas_datetime_longdate_1": "%d. ",
  "pas_datetime_longdate_2": " %Y",
  "pas_datetime_longdate_month_1": "January",

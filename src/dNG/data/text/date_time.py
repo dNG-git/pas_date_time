@@ -17,6 +17,8 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
+# pylint: disable=import-error
+
 from math import floor
 from time import gmtime, strftime, time
 

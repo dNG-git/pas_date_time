@@ -33,7 +33,7 @@ output.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
 :subpackage: datetime
-:since:      v0.2.00
+:since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
     """
@@ -95,15 +95,16 @@ Returns the formatted date and / or time.
 :param hide_tz: True to hide the timezone information.
 
 :return: (str) Formatted date and / or time
-:since:  v0.2.00
+:since:  v1.0.0
         """
 
+        if (not L10n.is_defined("core_unknown")): L10n.init("core")
         _return = L10n.get("core_unknown")
 
         if (type(_type) is not int): _type = DateTime.get_type_int(_type)
 
         if (type(timestamp) in ( int, float )):
-            L10n.init("pas_datetime")
+            if (not L10n.is_defined("pas_datetime_time")): L10n.init("pas_datetime")
 
             if (tz != 0):
                 tz *= -1
@@ -136,12 +137,13 @@ Returns the formatted date and / or time.
                            )
                  ): _return = strftime(L10n.get("pas_datetime_shortdate"), _time)
             elif (_type in ( DateTime.TYPE_DATE_LONG, DateTime.TYPE_DATE_TIME_LONG )):
-                month = strftime("%m", _time)
+                month = L10n.get("pas_datetime_longdate_month_{0:d}".format(int(strftime("%m", _time))))
 
-                _return = "{0}{1}{2}".format(strftime(L10n.get("pas_datetime_longdate_1"), _time),
-                                             L10n.get("pas_datetime_longdate_month_{0:d}".format(int(month))),
-                                             strftime(L10n.get("pas_datetime_longdate_2"), _time)
-                                            )
+                _return = strftime(L10n.get_instance().translate("pas_datetime_longdate",
+                                                                 month = month
+                                                                ),
+                                   _time
+                                  )
             #
 
             if (_type in ( DateTime.TYPE_DATE_TIME_SHORT, DateTime.TYPE_DATE_TIME_LONG, DateTime.TYPE_TIME )):
@@ -175,9 +177,10 @@ ago".
 :param tz: The difference in hours west of UTC
 
 :return: (str) Descriptive, formatted date and time
-:since:  v0.2.00
+:since:  v1.0.0
         """
 
+        if (not L10n.is_defined("core_unknown")): L10n.init("core")
         _return = L10n.get("core_unknown")
 
         if (_type is None): _type = DateTime.TYPE_FUZZY
@@ -190,13 +193,14 @@ ago".
                      )
             and type(timestamp) in ( int, float )
            ):
-            L10n.init("pas_datetime")
+            if (not L10n.is_defined("pas_datetime_fuzzy_just_now")): L10n.init("pas_datetime")
 
             if (tz != 0):
                 tz *= -1
                 timestamp += (3600 * tz)
             #
 
+            l10n_instance = L10n.get_instance()
             time_difference = time() - timestamp
 
             if (time_difference < 0
@@ -204,44 +208,39 @@ ago".
                 or (_type == DateTime.TYPE_FUZZY_MONTH and time_difference > 2591999)
                 or (_type == DateTime.TYPE_FUZZY_YEAR and time_difference > 31535999)
                ): _return = DateTime.format_l10n(DateTime.TYPE_DATE_TIME_SHORT, timestamp, tz)
-            elif (time_difference < 60): _return = L10n.get("pas_datetime_fuzzy_just_now")
-            elif (time_difference < 300): _return = L10n.get("pas_datetime_fuzzy_last_five_minutes")
+            elif (time_difference < 60): _return = l10n_instance.get("pas_datetime_fuzzy_just_now")
+            elif (time_difference < 300): _return = l10n_instance.get("pas_datetime_fuzzy_last_five_minutes")
             elif (time_difference < 7200):
-                _return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_minutes_ago_1"),
-                                               floor(time_difference / 60),
-                                               L10n.get("pas_datetime_fuzzy_minutes_ago_2")
-                                              )
+                _return = l10n_instance.translate("pas_datetime_fuzzy_minutes_ago",
+                                                  floor(time_difference / 60)
+                                                 )
             elif (time_difference < 172800):
-                _return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_hours_ago_1"),
-                                               floor(time_difference / 3600),
-                                               L10n.get("pas_datetime_fuzzy_hours_ago_2")
-                                              )
+                _return = l10n_instance.translate("pas_datetime_fuzzy_hours_ago",
+                                                  floor(time_difference / 3600)
+                                                 )
             elif (time_difference < 5184000):
-                _return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_days_ago_1"),
-                                               floor(time_difference / 86400),
-                                               L10n.get("pas_datetime_fuzzy_days_ago_2")
-                                              )
+                _return = l10n_instance.translate("pas_datetime_fuzzy_days_ago",
+                                                  floor(time_difference / 86400)
+                                                 )
             else:
                 time_current = gmtime()
                 time_given = gmtime(timestamp)
 
                 if (time_difference < 63072000):
-                    _return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_months_ago_1"),
-                                                   (((time_current.tm_year - time_given.tm_year) * 12)
-                                                    + (time_current.tm_mon - time_given.tm_mon)
-                                                    + (1 if ((time_current.tm_mday - time_given.tm_mday) > 15) else 0)
-                                                    + (-1 if ((time_current.tm_mday - time_given.tm_mday) < -15) else 0)
-                                                   ),
-                                                   L10n.get("pas_datetime_fuzzy_months_ago_2")
-                                                  )
+                    _return = l10n_instance.translate("pas_datetime_fuzzy_months_ago",
+                                                      (((time_current.tm_year - time_given.tm_year) * 12)
+                                                       + (time_current.tm_mon - time_given.tm_mon)
+                                                       + (1 if ((time_current.tm_mday - time_given.tm_mday) > 15) else 0)
+                                                       + (-1 if ((time_current.tm_mday - time_given.tm_mday) < -15) else 0)
+                                                      )
+                                                     )
                 else:
-                    _return = "{0}{1:d}{2}".format(L10n.get("pas_datetime_fuzzy_years_ago_1"),
-                                                   ((time_current.tm_year - time_given.tm_year)
-                                                    + (1 if ((time_current.tm_mon - time_given.tm_mon) > 6) else 0)
-                                                    + (-1 if ((time_current.tm_mon - time_given.tm_mon) < -6) else 0)
-                                                   ),
-                                                   L10n.get("pas_datetime_fuzzy_years_ago_2")
-                                                  )
+                    _return = l10n_instance.translate("pas_datetime_fuzzy_years_ago",
+                                                      ((time_current.tm_year - time_given.tm_year)
+                                                       + (1 if ((time_current.tm_mon - time_given.tm_mon) > 6) else 0)
+                                                       + (-1 if ((time_current.tm_mon - time_given.tm_mon) < -6) else 0)
+                                                      )
+                                                     )
                 #
             #
         #
@@ -257,7 +256,7 @@ Parses the given type parameter given as a string value.
 :param _type: String type
 
 :return: (int) Internal type
-:since:  v0.2.00
+:since:  v1.0.0
         """
 
         if (_type == "date_long"): _return = DateTime.TYPE_DATE_LONG

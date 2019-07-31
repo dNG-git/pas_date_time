@@ -1,0 +1,32 @@
+{
+    "pas_date_time_mode": 24,
+
+    "pas_date_time_connector": " at ",
+
+    "pas_date_time_fuzzy_just_now": "just now",
+    "pas_date_time_fuzzy_last_five_minutes": "some minutes ago",
+    "pas_date_time_fuzzy_days_ago": "%n days ago",
+    "pas_date_time_fuzzy_hours_ago": "%n hours ago",
+    "pas_date_time_fuzzy_minutes_ago": "%n minutes ago",
+    "pas_date_time_fuzzy_months_ago": "%n months ago",
+    "pas_date_time_fuzzy_years_ago": "%n years ago",
+
+    "pas_date_time_long_date_format": "%d. %month %Y",
+    "pas_date_time_long_date_month_1": "January",
+    "pas_date_time_long_date_month_2": "February",
+    "pas_date_time_long_date_month_3": "March",
+    "pas_date_time_long_date_month_4": "April",
+    "pas_date_time_long_date_month_5": "May",
+    "pas_date_time_long_date_month_6": "June",
+    "pas_date_time_long_date_month_7": "July",
+    "pas_date_time_long_date_month_8": "August",
+    "pas_date_time_long_date_month_9": "September",
+    "pas_date_time_long_date_month_10": "October",
+    "pas_date_time_long_date_month_11": "November",
+    "pas_date_time_long_date_month_12": "December",
+
+    "pas_date_time_short_date_format": "%m/%d/%Y",
+    "pas_date_time_year_and_month": "%m/%Y",
+
+    "pas_date_time_time_format": "%H:%M"
+}

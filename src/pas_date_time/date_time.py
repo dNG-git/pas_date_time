@@ -5,7 +5,7 @@ direct PAS
 Python Application Services
 ----------------------------------------------------------------------------
 (C) direct Netware Group - All rights reserved
-https://www.direct-netware.de/redirect?pas;datetime
+https://www.direct-netware.de/redirect?pas;date_time
 
 This Source Code Form is subject to the terms of the Mozilla Public License,
 v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -17,14 +17,13 @@ https://www.direct-netware.de/redirect?licenses;mpl2
 #echo(__FILEPATH__)#
 """
 
-# pylint: disable=import-error
-
 from math import floor
 from time import gmtime, strftime, time
 
-from .l10n import L10n
+from pas_l10n import L10n
+from pas_rfc_basics import DateTime as _DateTime
 
-class DateTime(object):
+class DateTime(_DateTime):
     """
 "DateTime" provides formatting methods for text processing like localized
 output.
@@ -32,7 +31,7 @@ output.
 :author:     direct Netware Group et al.
 :copyright:  direct Netware Group - All rights reserved
 :package:    pas
-:subpackage: datetime
+:subpackage: date_time
 :since:      v1.0.0
 :license:    https://www.direct-netware.de/redirect?licenses;mpl2
              Mozilla Public License, v. 2.0
@@ -98,20 +97,20 @@ Returns the formatted date and / or time.
 :since:  v1.0.0
         """
 
-        if (not L10n.is_defined("core_unknown")): L10n.init("core")
-        _return = L10n.get("core_unknown")
+        if (not L10n.is_defined("pas_unknown")): L10n.init("pas")
+        _return = L10n.get("pas_unknown")
 
         if (type(_type) is not int): _type = DateTime.get_type_int(_type)
 
         if (type(timestamp) in ( int, float )):
-            if (not L10n.is_defined("pas_datetime_time")): L10n.init("pas_datetime")
+            if (not L10n.is_defined("pas_date_time_connector")): L10n.init("pas_date_time")
 
             if (tz != 0):
                 tz *= -1
                 timestamp += (3600 * tz)
             #
 
-            if (dtconnector is None): dtconnector = L10n.get("pas_datetime_connector", " - ")
+            if (dtconnector is None): dtconnector = L10n.get("pas_date_time_connector", " - ")
             _time = gmtime(timestamp)
 
             if (_type in ( DateTime.TYPE_FUZZY,
@@ -131,15 +130,15 @@ Returns the formatted date and / or time.
             #
 
             if (_type == DateTime.TYPE_YEAR): _return = strftime("%Y", _time)
-            elif (_type == DateTime.TYPE_YEAR_AND_MONTH): _return = strftime(L10n.get("pas_datetime_year_and_month"), _time)
+            elif (_type == DateTime.TYPE_YEAR_AND_MONTH): _return = strftime(L10n.get("pas_date_time_year_and_month"), _time)
             elif (_type in ( DateTime.TYPE_DATE_SHORT,
                              DateTime.TYPE_DATE_TIME_SHORT
                            )
-                 ): _return = strftime(L10n.get("pas_datetime_shortdate"), _time)
+                 ): _return = strftime(L10n.get("pas_date_time_short_date_format"), _time)
             elif (_type in ( DateTime.TYPE_DATE_LONG, DateTime.TYPE_DATE_TIME_LONG )):
-                month = L10n.get("pas_datetime_longdate_month_{0:d}".format(int(strftime("%m", _time))))
+                month = L10n.get("pas_date_time_long_date_month_{0:d}".format(int(strftime("%m", _time))))
 
-                _return = strftime(L10n.get_instance().translate("pas_datetime_longdate",
+                _return = strftime(L10n.get_instance().translate("pas_date_time_long_date_format",
                                                                  month = month
                                                                 ),
                                    _time
@@ -148,10 +147,10 @@ Returns the formatted date and / or time.
 
             if (_type in ( DateTime.TYPE_DATE_TIME_SHORT, DateTime.TYPE_DATE_TIME_LONG, DateTime.TYPE_TIME )):
                 if (_return != ""): _return += dtconnector
-                _return += strftime(L10n.get("pas_datetime_time"), _time)
+                _return += strftime(L10n.get("pas_date_time_time_format"), _time)
 
                 if (not hide_tz):
-                    _return += " {0}".format(L10n.get("core_timezone_gmt"))
+                    _return += " {0}".format(L10n.get("pas_timezone_gmt"))
 
                     tz_hours = int(tz)
                     tz_minutes = int((tz % 1) * 60)
@@ -180,8 +179,8 @@ ago".
 :since:  v1.0.0
         """
 
-        if (not L10n.is_defined("core_unknown")): L10n.init("core")
-        _return = L10n.get("core_unknown")
+        if (not L10n.is_defined("pas_unknown")): L10n.init("pas")
+        _return = L10n.get("pas_unknown")
 
         if (_type is None): _type = DateTime.TYPE_FUZZY
         elif (type(_type) is not int): _type = DateTime.get_type_int(_type)
@@ -193,7 +192,7 @@ ago".
                      )
             and type(timestamp) in ( int, float )
            ):
-            if (not L10n.is_defined("pas_datetime_fuzzy_just_now")): L10n.init("pas_datetime")
+            if (not L10n.is_defined("pas_date_time_fuzzy_just_now")): L10n.init("pas_date_time")
 
             if (tz != 0):
                 tz *= -1
@@ -208,18 +207,18 @@ ago".
                 or (_type == DateTime.TYPE_FUZZY_MONTH and time_difference > 2591999)
                 or (_type == DateTime.TYPE_FUZZY_YEAR and time_difference > 31535999)
                ): _return = DateTime.format_l10n(DateTime.TYPE_DATE_TIME_SHORT, timestamp, tz)
-            elif (time_difference < 60): _return = l10n_instance.get("pas_datetime_fuzzy_just_now")
-            elif (time_difference < 300): _return = l10n_instance.get("pas_datetime_fuzzy_last_five_minutes")
+            elif (time_difference < 60): _return = l10n_instance.get("pas_date_time_fuzzy_just_now")
+            elif (time_difference < 300): _return = l10n_instance.get("pas_date_time_fuzzy_last_five_minutes")
             elif (time_difference < 7200):
-                _return = l10n_instance.translate("pas_datetime_fuzzy_minutes_ago",
+                _return = l10n_instance.translate("pas_date_time_fuzzy_minutes_ago",
                                                   floor(time_difference / 60)
                                                  )
             elif (time_difference < 172800):
-                _return = l10n_instance.translate("pas_datetime_fuzzy_hours_ago",
+                _return = l10n_instance.translate("pas_date_time_fuzzy_hours_ago",
                                                   floor(time_difference / 3600)
                                                  )
             elif (time_difference < 5184000):
-                _return = l10n_instance.translate("pas_datetime_fuzzy_days_ago",
+                _return = l10n_instance.translate("pas_date_time_fuzzy_days_ago",
                                                   floor(time_difference / 86400)
                                                  )
             else:
@@ -227,7 +226,7 @@ ago".
                 time_given = gmtime(timestamp)
 
                 if (time_difference < 63072000):
-                    _return = l10n_instance.translate("pas_datetime_fuzzy_months_ago",
+                    _return = l10n_instance.translate("pas_date_time_fuzzy_months_ago",
                                                       (((time_current.tm_year - time_given.tm_year) * 12)
                                                        + (time_current.tm_mon - time_given.tm_mon)
                                                        + (1 if ((time_current.tm_mday - time_given.tm_mday) > 15) else 0)
@@ -235,7 +234,7 @@ ago".
                                                       )
                                                      )
                 else:
-                    _return = l10n_instance.translate("pas_datetime_fuzzy_years_ago",
+                    _return = l10n_instance.translate("pas_date_time_fuzzy_years_ago",
                                                       ((time_current.tm_year - time_given.tm_year)
                                                        + (1 if ((time_current.tm_mon - time_given.tm_mon) > 6) else 0)
                                                        + (-1 if ((time_current.tm_mon - time_given.tm_mon) < -6) else 0)

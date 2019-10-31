@@ -1,4 +1,4 @@
 git+https://git.direct-netware.de/pas/l10n/@v1.0.0#egg=pas-l10n
 git+https://git.direct-netware.de/pas/rfc_basics/@v1.0.0#egg=pas-rfc-basics
 
-git+https://git.direct-netware.de/dpt/builder_suite/@v1.0.0#egg=dpt-builder-suite
+git+https://git.direct-netware.de/dpt/builder_suite/@v1.0.1#egg=dpt-builder-suite

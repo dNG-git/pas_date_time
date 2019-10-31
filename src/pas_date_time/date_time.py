@@ -82,6 +82,12 @@ Fuzzy timestamps up to one month, short date and time format afterwards
 Fuzzy timestamps up to one year, short date and time format afterwards
     """
 
+    __slots__ = [ ]
+    """
+python.org: __slots__ reserves space for the declared variables and prevents
+the automatic creation of __dict__ and __weakref__ for each instance.
+    """
+
     @staticmethod
     def format_l10n(_type, timestamp, tz = 0, dtconnector = None, hide_tz = False):
         """
